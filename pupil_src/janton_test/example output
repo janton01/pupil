@@ -1,0 +1,7 @@
+b'gaze': {b'topic': b'gaze.2d.0.', b'norm_pos': [0.0, 1.0], b'confidence': 0.0, b'timestamp': 423715.169399, b'base_data': [{b'topic': b'pupil', b'confidence': 0.0, b'ellipse': {b'center': [0.0, 0.0], b'axes': [0.0, 0.0], b'angle': -90.0}, b'diameter': 0.0, b'norm_pos': [0.0, 1.0], b'timestamp': 423715.169399, b'method': b'2d c++', b'id': 0}]}
+
+b'gaze': {b'topic': b'gaze.2d.0.', b'norm_pos': [0.5, 0.5], b'confidence': 0.0, b'timestamp': 423859.226465, b'base_data': [{b'topic': b'pupil', b'circle_3d': {b'center': [0.0, -0.0, 0.0], b'normal': [0.0, -0.0, 0.0], b'radius': 0.0}, b'confidence': 0.0, b'timestamp': 423859.226465, b'diameter_3d': 0.0, b'ellipse': {b'center': [160.0, 120.0], b'axes': [0.0, 0.0], b'angle': 90.0}, b'norm_pos': [0.5, 0.5], b'diameter': 0.0, b'sphere': {b'center': [0.0784193314360188, -4.565161940481515, 58.21248400838278], b'radius': 12.0}, b'projected_sphere': {b'center': [160.83521578435528, 71.37812015218329], b'axes': [255.61527314067604, 255.61527314067604], b'angle': 90.0}, b'model_confidence': 0.8907006375358018, b'model_id': 2, b'model_birth_timestamp': 423804.416465, b'theta': 0, b'phi': 0, b'method': b'3d c++', b'id': 0}]}
+
+
+b'pupil.0': {b'topic': b'pupil', b'confidence': 0.0, b'ellipse': {b'center': [0.0, 0.0], b'axes': [0.0, 0.0], b'angle': -90.0}, b'diameter': 0.0, b'norm_pos': [0.0, 1.0], b'timestamp': 423715.177799, b'method': b'2d c++', b'id': 0}
+

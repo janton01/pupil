@@ -39,7 +39,9 @@ def main():
     subscriber.set(zmq.SUBSCRIBE, b'notify.') #receive all notification messages
     subscriber.set(zmq.SUBSCRIBE, b'logging.error') #receive logging error messages
     subscriber.set(zmq.SUBSCRIBE, b'fixations')
-    subscriber.set(zmq.SUBSCRIBE, b'fixations')
+    subscriber.set(zmq.SUBSCRIBE, b'blink.')
+    subscriber.set(zmq.SUBSCRIBE, b'Blink_Detection')
+    subscriber.set(zmq.SUBSCRIBE, b'Fixation_Detector')
     #subscriber.set(zmq.SUBSCRIBE, b'fixations')
 
     #subscriber.set(zmq.SUBSCRIBE, '') #receive everything (don't do this)
@@ -96,7 +98,7 @@ def main():
     #print(send_recv_notification(n))
 
     i = 0
-    while i < 10:
+    while i < 10000:
         i += 1
         topic,payload = subscriber.recv_multipart()
         message = serializer.loads(payload)
