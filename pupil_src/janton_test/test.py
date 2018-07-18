@@ -30,31 +30,8 @@ def main():
         requester.send(b't') #see Pupil Remote Plugin for details
         return float(requester.recv())
 
-    requester.send_string('R')
-    print(requester.recv_string())
-    #...continued from above
-    subscriber = ctx.socket(zmq.SUB)
-    subscriber.connect('tcp://%s:%s'%(ip,sub_port))
-    subscriber.set(zmq.SUBSCRIBE, b'pupil.0') #receive all notification messages
-    subscriber.set(zmq.SUBSCRIBE, b'pupil.1') #receive all notification messages
-    subscriber.set(zmq.SUBSCRIBE, b'gaze') #receive all notification messages
-    subscriber.set(zmq.SUBSCRIBE, b'notify.') #receive all notification messages
-    subscriber.set(zmq.SUBSCRIBE, b'logging.error') #receive logging error messages
-    # subscriber.set(zmq.SUBSCRIBE, b'fixations')
-    # subscriber.set(zmq.SUBSCRIBE, b'blink')
-    # subscriber.set(zmq.SUBSCRIBE, b'Blink_Detection')
-    # subscriber.set(zmq.SUBSCRIBE, b'Fixation_Detector')
-
-    # # set calibration method to hmd calibration
-    # #n = {'subject':'start_plugin','name':'fixations', 'args':{}}
-    # #print(send_recv_notification(n))    # set calibration method to hmd calibration
-    # #n = {'subject':'start_plugin','name':'blink', 'args':{}}
-    # #print(send_recv_notification(n))    # set calibration method to hmd calibration
-    # n = {'subject':'start_plugin','name':'Blink_Detection', 'args':{}}
-    # print(send_recv_notification(n))    # set calibration method to hmd calibration
-    # n = {'subject':'start_plugin','name':'Fixation_Detector', 'args':{}}
-    # print(send_recv_notification(n))
-
+    # time.sleep(1)
+    # requester.send_string('R')
 
     # set calibration method to hmd calibration
     n = {'subject':'start_plugin','name':'HMD_Calibration', 'args':{}}
@@ -63,6 +40,33 @@ def main():
     # start caliration routine with params. This will make pupil start sampeling pupil data.
     n = {'subject':'calibration.should_start', 'hmd_video_frame_size':(1000,1000), 'outlier_threshold':35}
     print(send_recv_notification(n))
+
+
+
+    # print(requester.recv_string())
+    # #...continued from above
+    subscriber = ctx.socket(zmq.SUB)
+    subscriber.connect('tcp://%s:%s'%(ip,sub_port))
+    subscriber.set(zmq.SUBSCRIBE, b'pupil.0') #receive all notification messages
+    subscriber.set(zmq.SUBSCRIBE, b'pupil.1') #receive all notification messages
+    subscriber.set(zmq.SUBSCRIBE, b'gaze') #receive all notification messages
+    subscriber.set(zmq.SUBSCRIBE, b'notify.') #receive all notification messages
+    subscriber.set(zmq.SUBSCRIBE, b'logging.error') #receive logging error messages
+    subscriber.set(zmq.SUBSCRIBE, b'fixations')
+    subscriber.set(zmq.SUBSCRIBE, b'blink')
+    subscriber.set(zmq.SUBSCRIBE, b'Blink_Detection')
+    subscriber.set(zmq.SUBSCRIBE, b'Fixation_Detector')
+
+    #  set calibration method to hmd calibration
+    n = {'subject':'start_plugin','name':'fixations', 'args':{}}
+    print(send_recv_notification(n))    # set calibration method to hmd calibration
+    n = {'subject':'start_plugin','name':'blink', 'args':{}}
+    print(send_recv_notification(n))    # set calibration method to hmd calibration
+    n = {'subject':'start_plugin','name':'Blink_Detection', 'args':{}}
+    print(send_recv_notification(n))    # set calibration method to hmd calibration
+    n = {'subject':'start_plugin','name':'Fixation_Detector', 'args':{}}
+    print(send_recv_notification(n))
+
 
     # Mockup logic for sample movement:
     # We sample some reference positions (in normalized screen coords).
@@ -101,7 +105,7 @@ def main():
     time.sleep(2)
 
 
-    #subscriber.set(zmq.SUBSCRIBE, '') #receive everything (don't do this)
+    subscriber.set(zmq.SUBSCRIBE, '') #receive everything (don't do this)
 
     # you can setup multiple subscriber sockets
     # Sockets can be polled or read in different threads.
@@ -117,8 +121,8 @@ def main():
         return requester.recv_string()
 
     #test notification, note that you need to listen on the IPC to receive notifications!
-    #notify({'subject':"calibration.should_start"})
-    #notify({'subject':"calibration.should_stop"})
+    notify({'subject':"calibration.should_start"})
+    notify({'subject':"calibration.should_stop"})
 
     n = {'subject':'set_detection_mapping_mode','mode':'3d', 'args':{}}
     print(send_recv_notification(n))
@@ -128,24 +132,24 @@ def main():
     n = {'subject':'eye_process.should_start.0','eye_id':0, 'args':{}}
     print(send_recv_notification(n))
 
-    #n = {'subject':'blink','eye_id':0, 'args':{}}
-    #print(send_recv_notification(n))
+    n = {'subject':'blink','eye_id':0, 'args':{}}
+    print(send_recv_notification(n))
 
     n = {'subject':'eye_process.should_start.1','eye_id':1, 'args':{}}
     print(send_recv_notification(n))
-    #time.sleep(2)
+    time.sleep(2)
 
 
     # set calibration method to hmd calibration
-    #n = {'subject':'start_plugin','name':'HMD_Calibration', 'args':{}}
-    #print(send_recv_notification(n))
+    n = {'subject':'start_plugin','name':'HMD_Calibration', 'args':{}}
+    print(send_recv_notification(n))
 
 
-    #time.sleep(2)
-    #requester.send(b'R')
-    # set calibration method to hmd calibration
-    #n = {'subject':'service_process.should_stop'}
-    #print(send_recv_notification(n))
+    time.sleep(2)
+    requester.send(b'R')
+    #set calibration method to hmd calibration
+    n = {'subject':'service_process.should_stop'}
+    print(send_recv_notification(n))
 
     i = 0
     while i < 100:
@@ -154,14 +158,15 @@ def main():
         message = serializer.loads(payload)
         print(str(topic) + ": " + str(message))
 
-    requester.send_string('r')
-    print(requester.recv_string())
-
     n = {'subject':'eye_process.should_stop.0','eye_id':0, 'args':{}}
     print(send_recv_notification(n))
     time.sleep(1)
     n = {'subject':'eye_process.should_stop.1','eye_id':1, 'args':{}}
     print(send_recv_notification(n))
+
+
+    requester.send_string('r')
+    print(requester.recv_string())
 
 
 if __name__== "__main__":
