@@ -14,8 +14,17 @@ import os, sys, platform
 # sys.argv.append('profiled')
 # sys.argv.append('debug')
 # sys.argv.append('service')
-
-app = 'capture'
+print("app is capture(c), service(s), or player(p)")
+app = input()
+if app is 'c':
+    app = 'capture'
+elif app is 's':
+    app = 'service'
+elif app is 'p':
+    app = 'player'
+else:
+    exit
+#app = 'service'
 
 if getattr(sys, 'frozen', False):
     if 'pupil_service' in sys.executable:

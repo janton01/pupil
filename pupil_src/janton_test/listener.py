@@ -34,8 +34,9 @@ def main():
     subscriber = ctx.socket(zmq.SUB)
     subscriber.connect('tcp://%s:%s'%(ip,sub_port))
 
-    subscriber.set(zmq.SUBSCRIBE, b'notify.') #receive all notification messages
-    subscriber.set(zmq.SUBSCRIBE, b'logging.error') #receive logging error messages
+    #subscriber.set(zmq.SUBSCRIBE, b'notify.') #receive all notification messages
+    #subscriber.set(zmq.SUBSCRIBE, b'logging.error') #receive logging error messages
+    subscriber.set(zmq.SUBSCRIBE, b'')
 
     # send notification:
     def notify(notification):
@@ -46,9 +47,7 @@ def main():
         requester.send(payload)
         return requester.recv_string()
 
-    i = 0
-    while i < 100:
-        i += 1
+    while True:
         topic,payload = subscriber.recv_multipart()
         message = serializer.loads(payload)
         print(str(topic) + ": " + str(message))

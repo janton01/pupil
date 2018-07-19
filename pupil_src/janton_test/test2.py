@@ -33,19 +33,19 @@ else:
         app = 'service'
     if 'player' in sys.argv:
         app = 'player'
-    print("path: " + str(os.path.abspath(__file__).rsplit('pupil_src', 1)))
+    #print("path: " + str(os.path.abspath(__file__).rsplit('pupil_src', 1)))
 
     pupil_base_dir = os.path.abspath(__file__).rsplit('pupil_src', 1)[0]
-    print("pupil base dir: " + pupil_base_dir)
+    #print("pupil base dir: " + pupil_base_dir)
     sys.path.append(os.path.join(pupil_base_dir, 'pupil_src', 'shared_modules'))
     # Specifiy user dir.
     user_dir = os.path.join(pupil_base_dir, '{}_settings'.format(app))
-    print("user_dir: " + user_dir)
+    #print("user_dir: " + user_dir)
     version_file = None
 
 # create folder for user settings, tmp data
 if not os.path.isdir(user_dir):
-    print(user_dir)
+    #print(user_dir)
     os.mkdir(user_dir)
 
 # create folder for user plugins
@@ -97,7 +97,7 @@ def clear_settings(user_dir):
 
 
 def launcher():
-    print("launcher")
+    #print("launcher")
     """Starts eye processes. Hosts the IPC Backbone and Logging functions.
 
     Reacts to notifications:
@@ -321,7 +321,7 @@ def launcher():
 
 
 if __name__ == '__main__':
-    print("start")
+    #print("start")
     freeze_support()
     if platform.system() == 'Darwin':
         set_start_method('spawn')
