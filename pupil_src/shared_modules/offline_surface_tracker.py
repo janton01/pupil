@@ -36,6 +36,7 @@ from surface_tracker import Surface_Tracker
 from square_marker_detect import draw_markers, m_marker_to_screen
 from offline_reference_surface import Offline_Reference_Surface
 
+import player_methods as pm
 import multiprocessing
 import platform
 if platform.system() == 'Darwin':
@@ -54,7 +55,7 @@ class Offline_Surface_Tracker(Surface_Tracker, Analysis_Plugin_Base):
     See marker_tracker.py for more info on this marker tracker.
     """
 
-    def __init__(self,g_pool,mode="Show Markers and Surfaces",min_marker_perimeter = 100,invert_image=False,robust_detection=True):
+    def __init__(self,g_pool,mode="Show Markers and Surfaces",min_marker_perimeter = 60,invert_image=False,robust_detection=True):
         super().__init__(g_pool,mode,min_marker_perimeter,invert_image,robust_detection,)
         self.order = .2
         self.marker_cache_version = 2
@@ -142,7 +143,7 @@ class Offline_Surface_Tracker(Surface_Tracker, Analysis_Plugin_Base):
 
         self.menu.elements[:] = []
         self.menu.append(ui.Switch('invert_image',self,setter=set_invert_image,label='Use inverted markers'))
-        self.menu.append(ui.Slider('min_marker_perimeter',self,min=20,max=500,step=1,setter=set_min_marker_perimeter))
+        self.menu.append(ui.Slider('min_marker_perimeter',self,min=30,max=100,step=1,setter=set_min_marker_perimeter))
         self.menu.append(ui.Info_Text('The offline surface tracker will look for markers in the entire video. By default it uses surfaces defined in capture. You can change and add more surfaces here.'))
         self.menu.append(ui.Info_Text("Press the export button or type 'e' to start the export."))
         self.menu.append(ui.Selector('mode',self,label='Mode',selection=["Show Markers and Surfaces","Show marker IDs","Show Heatmaps","Show Metrics"] ))
@@ -256,9 +257,7 @@ class Offline_Surface_Tracker(Surface_Tracker, Analysis_Plugin_Base):
         elif self.mode == "Show Markers and Surfaces":
             # edit surfaces by user
             if self.edit_surf_verts:
-                window = glfwGetCurrentContext()
-                pos = glfwGetCursorPos(window)
-                pos = normalize(pos, self.g_pool.camera_render_size, flip_y=True)
+                pos = self._last_mouse_pos  # inherited from Surface_Tracker
                 for s,v_idx in self.edit_surf_verts:
                     if s.detected:
                         new_pos =  s.img_to_ref_surface(np.array(pos))
@@ -428,7 +427,8 @@ class Offline_Surface_Tracker(Surface_Tracker, Analysis_Plugin_Base):
             csv_writer = csv.writer(csvfile, delimiter=',')
 
             # gaze distribution report
-            gaze_in_section = list(chain.from_iterable(self.g_pool.gaze_positions_by_frame[section]))
+            export_window = pm.exact_window(self.g_pool.timestamps, export_range)
+            gaze_in_section = self.g_pool.gaze_positions.by_ts_window(export_window)
             not_on_any_srf = set([gp['timestamp'] for gp in gaze_in_section])
 
             csv_writer.writerow(('total_gaze_point_count',len(gaze_in_section)))
