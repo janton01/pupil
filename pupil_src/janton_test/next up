@@ -1,0 +1,8 @@
+next up:
+
++ test blink detection on its own
++ why fixatino detection does not work? it outputs an error in the fixation_detector class. The error seems to mean to that it requires
+capture
+
+
++ test calibration 3d

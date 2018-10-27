@@ -50,7 +50,11 @@ def main():
     while True:
         topic,payload = subscriber.recv_multipart()
         message = serializer.loads(payload)
-        print(str(topic) + ": " + str(message))
+        if topic != b'delayed_notify.service_process.ui.should_update' and\
+           topic != b'notify.service_process.ui.should_update':
+            print(topic)
+            print(str(topic) + ": " + str(message))
+            print('\n\n')
 
 
 if __name__== "__main__":

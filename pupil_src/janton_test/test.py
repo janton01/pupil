@@ -4,12 +4,15 @@ import msgpack as serializer
 
 
 def main():
+    print("Started test 1")
     ctx = zmq.Context()
     # The requester talks to Pupil remote and receives the session unique IPC SUB PORT
     requester = ctx.socket(zmq.REQ)
+    print("REQUESTER READY!")
     ip = 'localhost' #If you talk to a different machine use its IP.
     port = 50020 #The port defaults to 50020 but can be set in the GUI of Pupil Capture
     requester.connect('tcp://%s:%s'%(ip,port))
+    print("requester connected")
     requester.send_string('SUB_PORT')
     sub_port = requester.recv_string()
     print(sub_port)
@@ -32,16 +35,6 @@ def main():
 
     # time.sleep(1)
     # requester.send_string('R')
-
-    # set calibration method to hmd calibration
-    n = {'subject':'start_plugin','name':'HMD_Calibration', 'args':{}}
-    print(send_recv_notification(n))
-
-    # start caliration routine with params. This will make pupil start sampeling pupil data.
-    n = {'subject':'calibration.should_start', 'hmd_video_frame_size':(1000,1000), 'outlier_threshold':35}
-    print(send_recv_notification(n))
-
-
 
     # print(requester.recv_string())
     # #...continued from above
@@ -67,6 +60,13 @@ def main():
     n = {'subject':'start_plugin','name':'Fixation_Detector', 'args':{}}
     print(send_recv_notification(n))
 
+    # set calibration method to hmd calibration
+    n = {'subject':'start_plugin','name':'HMD_Calibration', 'args':{}}
+    print(send_recv_notification(n))
+
+    # start caliration routine with params. This will make pupil start sampeling pupil data.
+    n = {'subject':'calibration.should_start', 'hmd_video_frame_size':(1000,1000), 'outlier_threshold':35}
+    print(send_recv_notification(n))
 
     # Mockup logic for sample movement:
     # We sample some reference positions (in normalized screen coords).
@@ -105,24 +105,24 @@ def main():
     time.sleep(2)
 
 
-    subscriber.set(zmq.SUBSCRIBE, '') #receive everything (don't do this)
+    #subscriber.set(zmq.SUBSCRIBE, b'') #receive everything (don't do this)
 
     # you can setup multiple subscriber sockets
     # Sockets can be polled or read in different threads.
 
 
-    # send notification:
-    def notify(notification):
-        """Sends ``notification`` to Pupil Remote"""
-        topic = 'notify.' + notification['subject']
-        payload = serializer.dumps(notification, use_bin_type=True)
-        requester.send_string(topic, flags=zmq.SNDMORE)
-        requester.send(payload)
-        return requester.recv_string()
+    # # send notification:
+    # def notify(notification):
+    #     """Sends ``notification`` to Pupil Remote"""
+    #     topic = 'notify.' + notification['subject']
+    #     payload = serializer.dumps(notification, use_bin_type=True)
+    #     requester.send_string(topic, flags=zmq.SNDMORE)
+    #     requester.send(payload)
+    #     return requester.recv_string()
 
-    #test notification, note that you need to listen on the IPC to receive notifications!
-    notify({'subject':"calibration.should_start"})
-    notify({'subject':"calibration.should_stop"})
+    # #test notification, note that you need to listen on the IPC to receive notifications!
+    # notify({'subject':"calibration.should_start"})
+    # notify({'subject':"calibration.should_stop"})
 
     n = {'subject':'set_detection_mapping_mode','mode':'3d', 'args':{}}
     print(send_recv_notification(n))
@@ -141,15 +141,13 @@ def main():
 
 
     # set calibration method to hmd calibration
-    n = {'subject':'start_plugin','name':'HMD_Calibration', 'args':{}}
-    print(send_recv_notification(n))
+    #n = {'subject':'start_plugin','name':'HMD_Calibration', 'args':{}}
+    #print(send_recv_notification(n))
 
 
-    time.sleep(2)
-    requester.send(b'R')
+    #time.sleep(2)
+    #requester.send(b'R')
     #set calibration method to hmd calibration
-    n = {'subject':'service_process.should_stop'}
-    print(send_recv_notification(n))
 
     i = 0
     while i < 100:
@@ -164,6 +162,8 @@ def main():
     n = {'subject':'eye_process.should_stop.1','eye_id':1, 'args':{}}
     print(send_recv_notification(n))
 
+    n = {'subject':'service_process.should_stop'}
+    print(send_recv_notification(n))
 
     requester.send_string('r')
     print(requester.recv_string())
