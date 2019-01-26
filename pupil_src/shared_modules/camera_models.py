@@ -68,9 +68,9 @@ def load_intrinsics(directory, cam_name, resolution):
     :return: Camera Model Object
     """
     file_path = os.path.join(directory, '{}.intrinsics'.format(cam_name.replace(" ", "_")))
+    print(file_path)
     try:
         calib_dict = load_object(file_path, allow_legacy=False)
-
         if calib_dict['version'] < __version__:
             logger.warning('Deprecated camera calibration found.')
             logger.info('Please recalibrate using the Camera Intrinsics Estimation calibration.')

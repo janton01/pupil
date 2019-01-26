@@ -26,6 +26,7 @@ class Plugin_Manager(System_Plugin_Base):
         self.user_plugins = [p for p in sorted(g_pool.plugin_by_name.values(),
                                                key=lambda p: p.__name__.lower())
                              if not issubclass(p, non_user_plugins)]
+        print(self.user_plugins)
 
     def init_ui(self):
         self.add_menu()
