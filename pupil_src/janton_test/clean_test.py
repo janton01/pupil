@@ -5,6 +5,7 @@ from subscriber import Subscriber
 
 topic_list = ["pupil.0",
               "pupil.1",
+
               "gaze",
               "notify",
               "logging.error",
@@ -86,7 +87,7 @@ def start_calibration(requester, hmd_video_frame_size, outlier_threshold):
     time.sleep(1)
     # start caliration routine with params. This will make pupil start sampeling pupil data.
     n = {'subject': 'calibration.should_start',
-         'hmd_video_frame_size': (1000, 1000), 'outlier_threshold': 35}
+         'hmd_video_frame_size': hmd_video_frame_size, 'outlier_threshold': 35}
     print(requester.notify(n))
 
 def end_calibration(requester, ref_data):

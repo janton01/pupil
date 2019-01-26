@@ -1,8 +1,9 @@
 next up:
 
-+ test blink detection on its own
-+ why fixatino detection does not work? it outputs an error in the fixation_detector class. The error seems to mean to that it requires
-capture
-
-
-+ test calibration 3d
++ move janton tests into HMD eyes
++ build code ontop of pupil zmq-tools
++ get real-time responses that are consistent with eye movements
++ Get mapping from raw gaze to domes
++ Perform eye discovery tests
++ Integrate with our system
++ Get plugins working/ find a way to ask questions to the eye tracker (are you looking at this spot?, are you fixating)
