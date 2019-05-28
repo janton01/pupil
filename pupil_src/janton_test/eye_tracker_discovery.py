@@ -37,8 +37,8 @@ def main():
     print("eye process started")
     time.sleep(2)
     calibrate(requester, display, nomr_physical_location_list, calib_per_point)
-    #requester.set_3d_detection_mapping_mode()
-    #real_time_graph(subscriber)
+    requester.set_3d_detection_mapping_mode()
+    real_time_graph(subscriber)
     requester.eye_process_end()
 
     return
@@ -84,8 +84,8 @@ def calibrate(requester, display, physical_location_list, times_per_point):
 def real_time_graph(subscriber):
     curr_pos_0 = [0, 0]
     curr_pos_1 = [0, 0]
-
-    for i in range(1000):
+    curr_pos_1_list = [[],[]]
+    for i in range(7000):
         topic, message = subscriber.read_message()
        # if topic == b'pupil.1':
         if topic == b'gaze':
@@ -99,10 +99,12 @@ def real_time_graph(subscriber):
                 print("2")
                 if message[b'confidence'] > 0.7:
                     curr_pos_0 = message[b'norm_pos']
+            if(-1<curr_pos_1[0]<1 and -1<curr_pos_1[1]<1):
+                curr_pos_1_list[0].append(curr_pos_1[0])
+                curr_pos_1_list[1].append(curr_pos_1[1])
         #plt.scatter(curr_pos_0[0], curr_pos_0[1])
         print(curr_pos_1)
-        plt.scatter(curr_pos_1[0], curr_pos_1[1])
-        plt.pause(0.05)
+    plt.scatter(curr_pos_1_list[0], curr_pos_1_list[1])
     plt.show()
 
 def test_accuracy(subscriber):
