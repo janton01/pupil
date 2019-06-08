@@ -2,11 +2,15 @@ import zmq
 import msgpack as serializer
 import time
 
+from msg_receiver import *
+
 class Subscriber():
     def __init__(self, ctx, ip, sub_port):
         # subscriber subscribes to channels and receives notifications
         self.subscriber_socket = ctx.socket(zmq.SUB)
-        self.subscriber_socket.connect('tcp://%s:%s'%(ip,sub_port))
+        url = 'tcp://%s:%s'%(ip,sub_port)
+        self.subscriber_socket.connect(url)
+        #self.subscriber_socket2 = Msg_Receiver(ctx, url=url, topics=b'gaze', hwm=100)
         print("Subscribed")
         time.sleep(1)
 
@@ -20,6 +24,17 @@ class Subscriber():
         self.subscriber_socket.set(zmq.SUBSCRIBE, str(topic_name).encode())
 
     def read_message(self):
-        topic,payload = self.subscriber_socket.recv_multipart()
-        message = serializer.loads(payload)
-        return topic, message
+        i = 0
+        # while(self.subscriber_socket.get(zmq.EVENTS)):
+        while(self.subscriber_socket2.socket.get(zmq.EVENTS)):
+            #topic, message = self.subscriber_socket2.recv()
+            topic,payload = self.subscriber_socket.recv_multipart()
+            message = serializer.loads(payload)
+            i+=1
+        print(i)
+        import pdb; pdb.set_trace()
+        try:
+            return topic, message
+        except UnboundLocalError as e:
+            return None, None
+        #import pdb;pdb.set_trace()

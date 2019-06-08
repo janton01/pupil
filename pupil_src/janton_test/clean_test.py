@@ -3,18 +3,19 @@ import time
 from requester import Requester
 from subscriber import Subscriber
 
-topic_list = ["pupil.0",
-              "pupil.1",
+topic_list = ["gaze"]
+              #"pupil.0",
+              #"pupil.1",
 
-              "gaze",
-              "notify",
-              "logging.error",
-              "Blink_Detection",
-              "blink",
-              "fixations",
-              "Annotation_Capture",
-              "Fixation_Detector",
-              "fixation_detector"]
+              #"gaze",]
+              #"notify",
+              #"logging.error",
+              #"Blink_Detection",
+              #"blink",
+              #"fixations",
+              #"Annotation_Capture",
+              #"Fixation_Detector",
+              #"fixation_detector"]
 #''] # this would receive everything
 
 non_calibration_plugins = ['Blink_Detection',

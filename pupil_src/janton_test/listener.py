@@ -52,8 +52,11 @@ def main():
         message = serializer.loads(payload)
         if topic != b'delayed_notify.service_process.ui.should_update' and\
            topic != b'notify.service_process.ui.should_update':
-            print(topic)
-            print(str(topic) + ": " + str(message))
+            print(str(topic))
+            if topic == b'gaze':
+                print("gaze")
+                if message[b'topic'] == b'gaze.2d.1.':
+                    print(message[b'norm_pos'])
             print('\n\n')
 
 

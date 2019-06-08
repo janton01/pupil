@@ -8,23 +8,23 @@ import matplotlib.pyplot as plt
 
 colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w', '0.75']
 
-import sys
+#import sys
 
-sys.path.append(
-    "/Users/JorgeMain/Box Sync/Jorge Work/Post-Tufts/2017/Tarseer/Tech/Software/tarseer/headset_prototype_v0.5/TarseerVFT/app")
+# sys.path.append(
+#     "/Users/JorgeMain/Box Sync/Jorge Work/Post-Tufts/2017/Tarseer/Tech/Software/tarseer/headset_prototype_v0.5/TarseerVFT/app")
 
-from src.debugging_tools.dev_code_template import DevCode
-
+# from src.debugging_tools.dev_code_template import DevCode
+display = None
 test_with_display = 0
 num_test_points = 9
 nomr_physical_location_list = [(0, 0),       (3.5 / 7.5, 0),       (7.5 / 7.5, 0),
                                (0, 4.5 / 9), (3.5 / 7.5, 4.5 / 9), (7.5 / 7.5, 4.5 / 9),
                                (0, 9 / 9),   (3.5 / 7.5, 9 / 9),   (7.5 / 7.5, 9 / 9)]
 def main():
-    if test_with_display:
-        display = DevCode.setup_display()
-    else:
-        display = 1
+    # if test_with_display:
+    #     display = DevCode.setup_display()
+    # else:
+    #     display = 1
 
     calib_per_point = 30  # half a second of data
 
@@ -36,8 +36,9 @@ def main():
     requester.eye_process_start()
     print("eye process started")
     time.sleep(2)
-    calibrate(requester, display, nomr_physical_location_list, calib_per_point)
+    #calibrate(requester, display, nomr_physical_location_list, calib_per_point)
     requester.set_3d_detection_mapping_mode()
+    time.sleep(1.5) # allow user to move to desired start location
     real_time_graph(subscriber)
     requester.eye_process_end()
 
@@ -54,10 +55,12 @@ def main():
     pass
 
 
+# def calibrate(requester, display, physical_location_list, times_per_point):
+#     test.start_calibration(requester, hmd_video_frame_size=(
+#         1000*7.5/9, 1000), outlier_threshold=35)
 def calibrate(requester, display, physical_location_list, times_per_point):
     test.start_calibration(requester, hmd_video_frame_size=(
-        1000*7.5/9, 1000), outlier_threshold=35)
-
+        1000*9/7.5, 1000), outlier_threshold=35)
     ref_data = []
     for location in physical_location_list:
         print('subject now looks at position:', location)
@@ -80,31 +83,40 @@ def calibrate(requester, display, physical_location_list, times_per_point):
     # We sample some reference positions (in normalized screen coords).
     # Positions can be freely defined
 
-
+graph_intervals = 2
 def real_time_graph(subscriber):
     curr_pos_0 = [0, 0]
     curr_pos_1 = [0, 0]
-    curr_pos_1_list = [[],[]]
-    for i in range(7000):
+    curr_pos_0_list = [[],[]]
+    confidence_min = 0.7
+    for i in range(int(50/0.016)):
+        time.sleep(0.01)
         topic, message = subscriber.read_message()
-       # if topic == b'pupil.1':
+        print(str(i) + " ------------" + str(topic) + "------------------")
+        continue
+        #if topic == b'pupil.1':
         if topic == b'gaze':
-            print("gaze")
-            if message[b'topic'] == b'gaze.2d.1.':
-                print(message)
-                if message[b'confidence'] > 0.7:
-                    curr_pos_1 = message[b'norm_pos']
-            #if topic == b'pupil.0':
+            #print("gaze")
             if message[b'topic'] == b'gaze.2d.0.':
-                print("2")
-                if message[b'confidence'] > 0.7:
-                    curr_pos_0 = message[b'norm_pos']
-            if(-1<curr_pos_1[0]<1 and -1<curr_pos_1[1]<1):
-                curr_pos_1_list[0].append(curr_pos_1[0])
-                curr_pos_1_list[1].append(curr_pos_1[1])
-        #plt.scatter(curr_pos_0[0], curr_pos_0[1])
-        print(curr_pos_1)
-    plt.scatter(curr_pos_1_list[0], curr_pos_1_list[1])
+                curr_pos_0 = message[b'norm_pos']
+                print(curr_pos_0, message[b'confidence'])
+                #print(message)
+                if message[b'confidence'] > confidence_min:
+                    if(-0.1<curr_pos_0[0]<1 and -0.1<curr_pos_0[1]<1):
+                        curr_pos_0_list[0].append(curr_pos_0[0])
+                        curr_pos_0_list[1].append(curr_pos_0[1])
+                        if(i%graph_intervals == 0):
+                            plt.pause(0.016)
+                            plt.scatter(curr_pos_0[0], curr_pos_0[1])
+            #if topic == b'pupil.0':
+            if message[b'topic'] == b'gaze.2d.1.':
+                #print("2")
+                if message[b'confidence'] > confidence_min:
+                    curr_pos_1 = message[b'norm_pos']
+        #if(i%100):
+            #plt.pause(0.005)
+    plt.clf()
+    plt.scatter(curr_pos_0_list[0], curr_pos_0_list[1])
     plt.show()
 
 def test_accuracy(subscriber):
