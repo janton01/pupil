@@ -31,8 +31,8 @@ class Subscriber():
             topic,payload = self.subscriber_socket.recv_multipart()
             message = serializer.loads(payload)
             i+=1
-        #print(i)
-        #import pdb; pdb.set_trace()
+        print("Number of Messages in the buffer: "str(i))
+        # Gets an error if no message on the buffer
         try:
             return topic, message
         except UnboundLocalError as e:

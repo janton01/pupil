@@ -90,30 +90,32 @@ def real_time_graph(subscriber):
     curr_pos_0_list = [[],[]]
     confidence_min = 0.7
     for i in range(int(40/0.016)):
+        # There is a sleep. Modify this to play around with how many messages
+        # are in the buffer whenever you recv.
         time.sleep(0.005)
         topic, message = subscriber.read_message()
-        #print(str(i) + " ------------" + str(topic) + "------------------")
-        #if topic == b'pupil.1':
+        # print(str(i) + " ------------" + str(topic) + "------------------")
         if topic == b'gaze':
-            #print("gaze")
             if message[b'topic'] == b'gaze.2d.0.':
                 curr_pos_0 = message[b'norm_pos']
                 print(curr_pos_0, message[b'confidence'])
-                #print(message)
+                # It filters based on confidence and the values received. If the
+                # values received are out of the screen
                 if message[b'confidence'] > confidence_min:
                     if(-0.1<curr_pos_0[0]<1 and -0.1<curr_pos_0[1]<1):
                         curr_pos_0_list[0].append(curr_pos_0[0])
                         curr_pos_0_list[1].append(curr_pos_0[1])
+                        # Again there is a plt.pause which is time the graph is
+                        # showing for. I have not not investigated further on
+                        # whether this is blocking and affects packets in queue.
                         if(i%graph_intervals == 0):
                             plt.pause(0.016)
                             plt.scatter(curr_pos_0[0], curr_pos_0[1])
-            #if topic == b'pupil.0':
             if message[b'topic'] == b'gaze.2d.1.':
-                #print("2")
                 if message[b'confidence'] > confidence_min:
                     curr_pos_1 = message[b'norm_pos']
-        #if(i%100):
-            #plt.pause(0.005)
+    # It graphs twice, once in real-time and once all the points. This is
+    # just used to ensure that the graph stays open when the test is done.
     plt.clf()
     plt.scatter(curr_pos_0_list[0], curr_pos_0_list[1])
     plt.show()
