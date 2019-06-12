@@ -25,14 +25,14 @@ class Subscriber():
 
     def read_message(self):
         i = 0
-        # while(self.subscriber_socket.get(zmq.EVENTS)):
-        while(self.subscriber_socket2.socket.get(zmq.EVENTS)):
+        while(self.subscriber_socket.get(zmq.EVENTS)):
+        #while(self.subscriber_socket2.socket.get(zmq.EVENTS)):
             #topic, message = self.subscriber_socket2.recv()
             topic,payload = self.subscriber_socket.recv_multipart()
             message = serializer.loads(payload)
             i+=1
-        print(i)
-        import pdb; pdb.set_trace()
+        #print(i)
+        #import pdb; pdb.set_trace()
         try:
             return topic, message
         except UnboundLocalError as e:

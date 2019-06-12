@@ -36,7 +36,7 @@ def main():
     requester.eye_process_start()
     print("eye process started")
     time.sleep(2)
-    #calibrate(requester, display, nomr_physical_location_list, calib_per_point)
+    calibrate(requester, display, nomr_physical_location_list, calib_per_point)
     requester.set_3d_detection_mapping_mode()
     time.sleep(1.5) # allow user to move to desired start location
     real_time_graph(subscriber)
@@ -89,11 +89,10 @@ def real_time_graph(subscriber):
     curr_pos_1 = [0, 0]
     curr_pos_0_list = [[],[]]
     confidence_min = 0.7
-    for i in range(int(50/0.016)):
-        time.sleep(0.01)
+    for i in range(int(40/0.016)):
+        time.sleep(0.005)
         topic, message = subscriber.read_message()
-        print(str(i) + " ------------" + str(topic) + "------------------")
-        continue
+        #print(str(i) + " ------------" + str(topic) + "------------------")
         #if topic == b'pupil.1':
         if topic == b'gaze':
             #print("gaze")
